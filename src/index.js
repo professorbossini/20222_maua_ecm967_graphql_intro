@@ -1,5 +1,44 @@
 import { createServer } from "@graphql-yoga/node";
 
+const usuarios = [
+  {
+    id: '100',
+    nome: 'Jose',
+    idade: 22,
+    livros: [
+      {
+        id: '1',
+        titulo: "Effective Java",
+        genero: 'Tecnico',
+        edicao: 3,
+        preco: 39.99
+      },
+      {
+        id: '2',
+        titulo: 'Concrete Mathematics',
+        genero: 'Tecnico',
+        edicao: 1,
+        preco: 89.99
+      }
+    ]
+  },
+  {
+    id: '101',
+    nome: 'Maria',
+    idade: 29,
+    livros: [
+      {
+        id: '5',
+        titulo: 'Programming Challenges',
+        genero: 'Tecnico',
+        edicao: 1,
+        preco: 39.99
+      }
+    ]
+  }
+]
+
+
 const livros = [
   {
     id: '1',
@@ -19,6 +58,12 @@ const livros = [
 
 //especificação de interface
 const typeDefs = `
+  type Usuario {
+    id: ID!,
+    nome: String!,
+    idade: Int!,
+    livros: [Livro!]
+  },
   type Livro {
     id: ID!
     titulo: String!
@@ -27,6 +72,7 @@ const typeDefs = `
     preco: Float
   },
   type Query{
+    usuarios: [Usuario!]!
     livros(precoMaximo: Float!): [Livro!]!
     adicionar (numeros: [Float!]!): Float!
     notas: [Int!]!
@@ -50,6 +96,9 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
+    usuarios(){
+      return usuarios  
+    },
     livros (parent, args, ctx, info){
       return livros.filter(l => l.preco <= args.precoMaximo)
     },
